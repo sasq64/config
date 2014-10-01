@@ -1,0 +1,15 @@
+{
+    "selector": "source.c++",
+    "cmd": [ "make", "-j6", "ACTIVEFILE=${file_name}" ],
+    "file_regex": "^(..[^:\n]*):([0-9]+):?([0-9]+)?:? (.*)$",
+	"working_dir": "${project_path:${folder:${file_path}}}",
+
+    "variants": [
+        { "cmd": ["make", "linkrun", "-j6", "ACTIVEFILE=${file_name}"],
+          "name": "Run"
+        },
+        { "cmd": ["make", "clean"],
+          "name": "Clean"
+        }
+    ]
+}
