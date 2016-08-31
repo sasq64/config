@@ -1,35 +1,110 @@
-" Let the runtime path to include Vundle and initialize
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
-" let Vundle manage Vundle, required
-Plugin 'VundleVim/Vundle.vim'
-
-Plugin 'vim-scripts/c.vim'
-Plugin 'octol/vim-cpp-enhanced-highlight'
-Plugin 'tpope/vim-fugitive'
-Plugin 'mhinz/vim-signify'
-Plugin 'ludovicchabant/vim-lawrencium'
-Plugin 'ctrlpvim/ctrlp.vim'
-Plugin 'rhysd/vim-clang-format'
-Plugin 'operator-user'
-Plugin 'LucHermitte/lh-vim-lib'
-Plugin 'LucHermitte/local_vimrc'
-Plugin 'tpope/vim-unimpaired'
-Plugin 'tpope/vim-surround.git'
-Plugin 'rizzatti/dash.vim'
-
-call vundle#end()            " required
-filetype plugin indent on    " required
-
 " Use Vim settings, rather than Vi settings (much better!).
 " This must be first, because it changes other options as a side effect.
 set nocompatible
 
+" Plugins {{{
+
+" Load vim-plug
+if empty(glob("~/.vim/autoload/plug.vim"))
+ silent !mkdir -p ~/.vim/autoload > /dev/null 2>&1   
+ execute '!curl -fLo ~/.vim/autoload/plug.vim https://raw.github.com/junegunn/vim-plug/master/plug.vim'
+endif
+
+call plug#begin('~/.vim/plugged')
+
+" Extra commands for C/C++ development
+Plug 'vim-scripts/c.vim'
+Plug 'octol/vim-cpp-enhanced-highlight', { 'for': 'cpp' }
+"" Advanced GIT handling
+Plug 'tpope/vim-fugitive'
+"" Like git-gutter, but for multiple systems
+Plug 'mhinz/vim-signify'
+"" Mercurial support
+Plug 'ludovicchabant/vim-lawrencium'
+"" Small wrapper on top of clang-format
+Plug 'rhysd/vim-clang-format', { 'for': 'cpp' }
+"" Define your own operators easily
+Plug 'operator-user'
+"" Allow a local vim config per directory
+Plug 'LucHermitte/lh-vim-lib'
+Plug 'LucHermitte/local_vimrc'
+"" Use Brackets leader for several next/prev shortcuts
+Plug 'tpope/vim-unimpaired'
+"" Operate on surrounding pairs, like quotes, parentheses..
+Plug 'tpope/vim-surround'
+"" Makes '.' works with more stuff
+Plug 'tpope/vim-repeat'
+"" Search in Dash from VIM
+Plug 'rizzatti/dash.vim'
+"" Advanced auto completion
+Plug 'Valloric/YouCompleteMe'
+"", { 'for': 'cpp' }
+"" Jump to include
+Plug 'a.vim'
+"" Run compile in background
+Plug 'tpope/vim-dispatch'
+"" Fast file opener
+Plug 'junegunn/fzf.vim'
+
+"" Distraction free mode
+Plug 'junegunn/goyo.vim'
+
+"" Run interactive processes, used by Unite
+Plug 'Shougo/vimproc.vim', {'do' : 'make'}
+"" Fuzzy search everything
+Plug 'Shougo/unite.vim'
+"" File view
+Plug 'Shougo/vimfiler.vim'
+"" Move between vim splits and tmux splits seamlessly
+Plug 'christoomey/vim-tmux-navigator'
+"" Silver searcher greping
+Plug 'rking/ag.vim'
+
+Plug 'tpope/vim-sleuth'
+
+Plug 'tpope/vim-speeddating'
+Plug 'mattn/calendar-vim'
+
+" Todo / Notes etc
+Plug 'jceb/vim-orgmode'
+
+" Personal Wiki / TODO / NOTES
+Plug 'vimwiki/vimwiki'
+
+" iTerm cursor / focus
+Plug 'sjl/vitality.vim'
+" Plug 'ConradIrwin/vim-bracketed-paste'
+"" DISABLED PLUGINS
+
+" Plug 'wincent/command-t'
+
+"" Smart snippets
+" Plug 'SirVer/ultisnips'
+" Plug 'honza/vim-snippets'
+
+" Plug 'plasticboy/vim-markdown', { 'for': 'markdown' }
+
+
+"" Fuzzy file open like Sublime
+" Plug 'ctrlpvim/ctrlp.vim'
+" Plug 'bling/vim-airline'
+" Plug 'L9'
+" Plug 'airblade/vim-gitgutter'
+" Plug 'terryma/vim-multiple-cursors'
+" Plug 'w0ng/vim-hybrid'
+" Plug 'wincent/command-t'
+" Plug 'artur-shaik/vim-javacomplete2'
+" Plug 'lyuts/vim-rtags'
+
+call plug#end()
+
+" }}}
+
+filetype plugin indent on
+
+set encoding=utf-8
 " Make backspace behave in a sane manner.
 set backspace=indent,eol,start
-
-" Switch syntax highlighting on
-syntax on
 
 " Enable file type detection and do language-dependent indenting.
 filetype plugin indent on
@@ -50,21 +125,27 @@ set whichwrap+=<,>,h,l,[,]
 set listchars=tab:──,trail:.,precedes:<,extends:>
 set laststatus=2
 set showcmd
+set ttymouse=sgr
 set background=dark
-colorscheme monokai
+colorscheme jellybeans
+" monokai-black
 set mouse=a
-autocmd FileType python set ts=4|set sw=4|set noex
+" autocmd FileType python set ts=4|set sw=4|set noex
 set hlsearch
 set noswapfile
+
+let g:ycm_auto_trigger = 0
+
+let wiki = {}
+let wiki.path = '~/Dropbox/conf/vimwiki/'
+let wiki.nested_syntaxes = {'python': 'python', 'c++': 'cpp'}
+let g:vimwiki_list = [wiki]
+
 
 " Use <C-L> to clear the highlighting of :set hlsearch.
 if maparg('<C-L>', 'n') ==# ''
   nnoremap <silent> <C-L> :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR><C-L>
 endif
-
-" CtrlP defaults
-let g:ctrlp_cmd = 'CtrlPMRU'
-let g:ctrlp_max_files = 0
 
 " Jump to diff changes
 nmap <leader>gj <plug>(signify-next-hunk)
@@ -78,23 +159,83 @@ xmap ac <plug>(signify-motion-outer-visual)
 :nmap <silent> <leader>d <Plug>DashSearch
 :nmap <silent> <leader>g :Google<CR>
 
+:nmap <space> <c-d>
+:nmap <backspace> <c-u>
 
-" F4 = Kill Buffer
+"nnoremap <silent> <C-Right> <c-w>l
+"nnoremap <silent> <C-Left> <c-w>h
+"nnoremap <silent> <C-Up> <c-w>k
+"nnoremap <silent> <C-Down> <c-w>j
+
+let g:tmux_navigator_no_mappings = 1
+
+nnoremap <silent> <C-Left> :TmuxNavigateLeft<cr>
+nnoremap <silent> <C-Down> :TmuxNavigateDown<cr>
+nnoremap <silent> <C-Up> :TmuxNavigateUp<cr>
+nnoremap <silent> <C-Right> :TmuxNavigateRight<cr>
+" nnoremap <silent> {Previous-Mapping} :TmuxNavigatePrevious<cr>
+
+map [D <C-Left>
+map [C <C-Right>
+map [A <C-Up>
+map [B <C-Down>
+
+" map! [D <C-Left>
+" map! [C <C-Right>
+" map! [A <C-Up>
+" map! [B <C-Down>
+
+" Switch cpp/h - SHIFT also searches for word under cursor
+nnoremap <f3> :A<cr>
+nnoremap [1;2R "zyiw:A<cr>/z<cr>
+
+" Kill Buffer
 map <F4> :bw<CR>
 imap <F4> <C-O>:bw<CR>
-" F7 = Build
-map <F7> :wa\|make<CR>
-imap <F7> <C-O>:wa\|make<CR>
-" F5 = Run
-map <F5> :wa\|make\ run<CR>
-imap <F5> <C-O>:wa\|make\ run<CR>
 
-"""""""""""" STATUSLINE
+" Build project
+map <F7> :wa\|Make<CR>
+imap <F7> <C-O>:wa\|Make<CR>
+
+" Run project
+map [15;2~ :execute "!" . b:run_command<cr>
+map <f5> :execute "!" . b:run_command . " > output.log &"<cr>
+
+" Next / Prev quickfix
+map <F6> :cn<CR>
+map [17;2~ :cp<CR>
+imap <F6>  <C-O>:cn<CR>
+
+" Save file
+imap <F9> <Esc>:w<cr>
+nmap <F9> :w<cr>
+nmap [20;2~ :wa<cr>
+
+" Look for symbol under cursor
+nnoremap <F2> :YcmCompleter GoTo<CR>
+nnoremap [26~ :Ag<CR>
+
+" Open files with `fzf`
+nnoremap  :Files<CR>
+nnoremap g :GitFiles<CR>
+
+nnoremap <leader>b :Unite buffer<cr>
+nnoremap <leader>f :Unite line:all -input=.*[[:alnum:]*&]\s\+[[:alnum:]]\+(.*)\($\\|[^\;]\)<cr>
+
+
+" #### Statusline {{{ 
+
+let s:haveVcPrompt = executable('vcprompt')
+
 function! GetBranch()
-	let s:path = expand('<afile>:p:h')
-	if s:path
-		cd `=s:path`
+	if ! s:haveVcPrompt
+		return ""
 	endif
+	let s:path = expand('<afile>:p:h')
+	if !isdirectory(s:path)
+		return ""
+	endif
+	" return system('cd ' . s:path . ' ; vcprompt -f "%b"')
     return system('vcprompt -f "%b"')
 endfunction
 au BufEnter * let g:current_branch=GetBranch()
@@ -105,12 +246,20 @@ hi StatusLine ctermfg=15 ctermbg=8
 hi User4 ctermfg=12
 hi User5 ctermfg=15 ctermbg=4
 hi User6 ctermfg=15 ctermbg=1
-set statusline=%f%q%4*%m%*%=%5*\ %{g:current_branch}\ %*%6*\ %4l,%-2v\ /\ %L\ %*\ 🕒\ %{strftime('%H:%M')}\ 
+
+hi StatusLine guibg=gray guifg=white
+hi User4 guifg=blue
+hi User5 guifg=white guibg=blue
+hi User6 guifg=white guibg=red
+
+set statusline=%f%q%4*%m%*%=%5*\ %{g:current_branch}\ %*%6*%4l,%-2v\ /\ %L\ %*
+
+" }}}
 
 set wildignore=*.o,*.obj,build,artifacts
 
 " Smart HOME : Toggle between column 0 and beginning of text
-function ExtendedHome()
+function! ExtendedHome()
     let column = col('.')
     normal! ^
     if column == col('.')
@@ -126,3 +275,22 @@ cabbr <expr> %% expand('%:p:h')
 " For mac/gui vim
 autocmd! GUIEnter * set vb t_vb=
 set guifont=Hack:h12
+
+let g:UltiSnipsSnippetsDir = "~/.vim/ultisnips"
+let g:UltiSnipsExpandTrigger="<c-j>"
+let g:ycm_global_ycm_extra_conf = '~/.vim/ycm_extra_conf.py'
+
+command! -nargs=0 -bar Qargs execute 'args ' . QuickfixFilenames()
+function! QuickfixFilenames()
+  " Building a hash ensures we get each buffer only once
+  let buffer_numbers = {}
+  for quickfix_item in getqflist()
+    let buffer_numbers[quickfix_item['bufnr']] = bufname(quickfix_item['bufnr'])
+  endfor
+  return join(values(buffer_numbers))
+endfunction
+
+set relativenumber
+highlight Pmenu ctermbg=blue gui=bold
+
+autocmd VimEnter * redraw!
