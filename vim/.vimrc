@@ -2,7 +2,7 @@
 " This must be first, because it changes other options as a side effect.
 set nocompatible
 
-" Plugins {{{
+" ######## Plugins {{{
 
 " Load vim-plug
 if empty(glob("~/.vim/autoload/plug.vim"))
@@ -12,8 +12,7 @@ endif
 
 call plug#begin('~/.vim/plugged')
 
-" Extra commands for C/C++ development
-Plug 'vim-scripts/c.vim'
+Plug 'hienvd/vim-stackoverflow'
 Plug 'octol/vim-cpp-enhanced-highlight', { 'for': 'cpp' }
 "" Advanced GIT handling
 Plug 'tpope/vim-fugitive'
@@ -44,6 +43,7 @@ Plug 'a.vim'
 "" Run compile in background
 Plug 'tpope/vim-dispatch'
 "" Fast file opener
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 
 "" Distraction free mode
@@ -60,22 +60,30 @@ Plug 'christoomey/vim-tmux-navigator'
 "" Silver searcher greping
 Plug 'rking/ag.vim'
 
-Plug 'tpope/vim-sleuth'
+Plug 'scrooloose/syntastic'
 
-Plug 'tpope/vim-speeddating'
-Plug 'mattn/calendar-vim'
-
-" Todo / Notes etc
-Plug 'jceb/vim-orgmode'
+Plug 'pangloss/vim-javascript'
 
 " Personal Wiki / TODO / NOTES
 Plug 'vimwiki/vimwiki'
 
-" iTerm cursor / focus
-Plug 'sjl/vitality.vim'
-" Plug 'ConradIrwin/vim-bracketed-paste'
 "" DISABLED PLUGINS
 
+" iTerm cursor / focus
+" Plug 'sjl/vitality.vim'
+" Plug 'ConradIrwin/vim-bracketed-paste'
+" Adapt tabsize to current project
+" Plug 'tpope/vim-sleuth'
+
+" Plug 'tpope/vim-speeddating'
+" Plug 'mattn/calendar-vim'
+
+" Todo / Notes etc
+" Plug 'jceb/vim-orgmode'
+
+" Extra commands for C/C++ development
+" Plug 'vim-scripts/c.vim'
+"
 " Plug 'wincent/command-t'
 
 "" Smart snippets
@@ -100,6 +108,7 @@ call plug#end()
 
 " }}}
 
+" ######## Basic Options {{{
 filetype plugin indent on
 
 set encoding=utf-8
@@ -125,15 +134,64 @@ set whichwrap+=<,>,h,l,[,]
 set listchars=tab:──,trail:.,precedes:<,extends:>
 set laststatus=2
 set showcmd
-set ttymouse=sgr
+set ttymouse=sgr " Support mouse clicks beyond col 2xx
 set background=dark
-colorscheme jellybeans
 " monokai-black
 set mouse=a
 " autocmd FileType python set ts=4|set sw=4|set noex
 set hlsearch
 set noswapfile
+set relativenumber
+set cursorline
 
+" }}}
+
+
+
+
+set wildignore=*.o,*.obj,build,artifacts
+if has('osx')
+  colorscheme jellybeans
+else
+  colorscheme monokai-black
+endif
+
+" '%%' expands to path of current file in command mode
+cabbr <expr> %% expand('%:p:h')
+
+" For mac/gui vim
+autocmd! GUIEnter * set vb t_vb=
+set guifont=Hack:h12
+highlight Pmenu ctermbg=blue gui=bold
+
+autocmd FileType vim setlocal foldmethod=marker
+
+autocmd FileType javascript setlocal shiftwidth=4 expandtab
+
+autocmd! GUIEnter * set vb t_vb= " Turn off visual bell in GUI mode
+set guifont=Hack:h12
+
+" Autocomplete menu color
+highlight Pmenu ctermbg=blue gui=bold
+
+function! FindFunction(name)
+ cexpr! system('ag --vimgrep -G ".(cs\|c\|cpp\|h\|java)$" "[A-Za-z\*]+\s+([A-Za-z_]+::)?' . a:name . '\s*\([^\)]*\)(\s+[a-z]+)*\s*(?=\{)"')
+endfunction
+
+function! FindClass(name)
+ cexpr! system('ag --vimgrep -G ".(cs\|c\|cpp\|h\|java)$" "(class\|struct\|interface\|namespace)\s+([A-Za-z_]+\s+)*' . a:name . '\s+(?!;)"')
+endfunction
+
+function! FindDefine(name)
+ cexpr! system('ag --vimgrep -G ".(c\|cpp\|h)$" "define\s+' . a:name . '(\s\|\()"')
+endfunction
+
+nmap <leader>af "zyiw:call FindFunction(@z)<cr>
+nmap <leader>ac "zyiw:call FindClass(@z)<cr>
+nmap <leader>ad "zyiw:call FindDefine(@z)<cr>
+
+
+" ######## Plugin settings {{{
 let g:ycm_auto_trigger = 0
 
 let wiki = {}
@@ -141,6 +199,10 @@ let wiki.path = '~/Dropbox/conf/vimwiki/'
 let wiki.nested_syntaxes = {'python': 'python', 'c++': 'cpp'}
 let g:vimwiki_list = [wiki]
 
+let g:ycm_global_ycm_extra_conf = '~/.vim/ycm_extra_conf.py'
+" }}}
+
+" ######## Keyboard mappings {{{
 
 " Use <C-L> to clear the highlighting of :set hlsearch.
 if maparg('<C-L>', 'n') ==# ''
@@ -159,38 +221,16 @@ xmap ac <plug>(signify-motion-outer-visual)
 :nmap <silent> <leader>d <Plug>DashSearch
 :nmap <silent> <leader>g :Google<CR>
 
+" SPACE/BACKSPACE up/down in normal mode
 :nmap <space> <c-d>
 :nmap <backspace> <c-u>
-
-"nnoremap <silent> <C-Right> <c-w>l
-"nnoremap <silent> <C-Left> <c-w>h
-"nnoremap <silent> <C-Up> <c-w>k
-"nnoremap <silent> <C-Down> <c-w>j
-
-let g:tmux_navigator_no_mappings = 1
-
-nnoremap <silent> <C-Left> :TmuxNavigateLeft<cr>
-nnoremap <silent> <C-Down> :TmuxNavigateDown<cr>
-nnoremap <silent> <C-Up> :TmuxNavigateUp<cr>
-nnoremap <silent> <C-Right> :TmuxNavigateRight<cr>
-" nnoremap <silent> {Previous-Mapping} :TmuxNavigatePrevious<cr>
-
-map [D <C-Left>
-map [C <C-Right>
-map [A <C-Up>
-map [B <C-Down>
-
-" map! [D <C-Left>
-" map! [C <C-Right>
-" map! [A <C-Up>
-" map! [B <C-Down>
 
 " Switch cpp/h - SHIFT also searches for word under cursor
 nnoremap <f3> :A<cr>
 nnoremap [1;2R "zyiw:A<cr>/z<cr>
 
 " Kill Buffer
-map <F4> :bw<CR>
+map <F4> :bp\|bd #<CR>
 imap <F4> <C-O>:bw<CR>
 
 " Build project
@@ -216,14 +256,47 @@ nnoremap <F2> :YcmCompleter GoTo<CR>
 nnoremap [26~ :Ag<CR>
 
 " Open files with `fzf`
-nnoremap  :Files<CR>
-nnoremap g :GitFiles<CR>
+nnoremap  :Files<CR>
+nnoremap g :GitFiles<CR>
+
+nnoremap  :Unite buffer<cr>
+
+nnoremap  "*p
+nnoremap  "*y
+nnoremap  :ed %%/
 
 nnoremap <leader>b :Unite buffer<cr>
 nnoremap <leader>f :Unite line:all -input=.*[[:alnum:]*&]\s\+[[:alnum:]]\+(.*)\($\\|[^\;]\)<cr>
 
+" }}}
 
-" #### Statusline {{{ 
+" ######## TMUX {{{
+"nnoremap <silent> <C-Right> <c-w>l
+"nnoremap <silent> <C-Left> <c-w>h
+"nnoremap <silent> <C-Up> <c-w>k
+"nnoremap <silent> <C-Down> <c-w>j
+
+let g:tmux_navigator_no_mappings = 1
+
+nnoremap <silent> <C-Left> :TmuxNavigateLeft<cr>
+nnoremap <silent> <C-Down> :TmuxNavigateDown<cr>
+nnoremap <silent> <C-Up> :TmuxNavigateUp<cr>
+nnoremap <silent> <C-Right> :TmuxNavigateRight<cr>
+" nnoremap <silent> {Previous-Mapping} :TmuxNavigatePrevious<cr>
+
+map [D <C-Left>
+map [C <C-Right>
+map [A <C-Up>
+map [B <C-Down>
+
+" map! [D <C-Left>
+" map! [C <C-Right>
+" map! [A <C-Up>
+" map! [B <C-Down>
+
+" }}}
+
+" ######## Statusline {{{ 
 
 let s:haveVcPrompt = executable('vcprompt')
 
@@ -256,9 +329,7 @@ set statusline=%f%q%4*%m%*%=%5*\ %{g:current_branch}\ %*%6*%4l,%-2v\ /\ %L\ %*
 
 " }}}
 
-set wildignore=*.o,*.obj,build,artifacts
-
-" Smart HOME : Toggle between column 0 and beginning of text
+" {{{ ######## Smart HOME : Toggle between column 0 and beginning of text
 function! ExtendedHome()
     let column = col('.')
     normal! ^
@@ -268,29 +339,5 @@ function! ExtendedHome()
 endfunction
 noremap <silent> <Home> :call ExtendedHome()<CR>
 inoremap <silent> <Home> <C-O>:call ExtendedHome()<CR>
+" }}}
 
-" '%%' expands to path of current file
-cabbr <expr> %% expand('%:p:h')
-
-" For mac/gui vim
-autocmd! GUIEnter * set vb t_vb=
-set guifont=Hack:h12
-
-let g:UltiSnipsSnippetsDir = "~/.vim/ultisnips"
-let g:UltiSnipsExpandTrigger="<c-j>"
-let g:ycm_global_ycm_extra_conf = '~/.vim/ycm_extra_conf.py'
-
-command! -nargs=0 -bar Qargs execute 'args ' . QuickfixFilenames()
-function! QuickfixFilenames()
-  " Building a hash ensures we get each buffer only once
-  let buffer_numbers = {}
-  for quickfix_item in getqflist()
-    let buffer_numbers[quickfix_item['bufnr']] = bufname(quickfix_item['bufnr'])
-  endfor
-  return join(values(buffer_numbers))
-endfunction
-
-set relativenumber
-highlight Pmenu ctermbg=blue gui=bold
-
-autocmd VimEnter * redraw!
