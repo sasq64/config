@@ -1,0 +1,10 @@
+{
+    "suggest.autoTrigger": "trigger",
+    "clangd.semanticHighlighting": false,
+    "clangd.arguments": [
+        "--background-index",
+        "--clang-tidy",
+        "-j=16",
+        "--suggest-missing-includes"
+    ]
+}
