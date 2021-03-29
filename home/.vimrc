@@ -19,10 +19,10 @@ Plug 'nvim-telescope/telescope.nvim'
 
 "Plug 'RishabhRD/popfix'
 "Plug 'RishabhRD/nvim-cheat.sh'
-
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'dbeniamine/cheat.sh-vim'
 
-Plug 'octol/vim-cpp-enhanced-highlight', { 'for': 'cpp' }
+" Plug 'octol/vim-cpp-enhanced-highlight', { 'for': 'cpp' }
 Plug 'eraserhd/parinfer-rust'
 " Plug 'guns/vim-sexp'
 " Plug 'tpope/vim-sexp-mappings-for-regular-people'
@@ -74,7 +74,7 @@ Plug 'junegunn/goyo.vim'
 "" Silver searcher greping
 Plug 'rking/ag.vim'
 
-Plug 'jackguo380/vim-lsp-cxx-highlight'
+" Plug 'jackguo380/vim-lsp-cxx-highlight'
 " let g:lsp_cxx_hl_use_text_props = 1
 " Personal Wiki / TODO / NOTES
 " Plug 'vimwiki/vimwiki'
@@ -457,6 +457,16 @@ nmap <leader>ad "zyiw:call FindDefine(@z)<cr>
 " }}}
 
 " ######## Plugin settings {{{
+
+lua <<EOF
+require'nvim-treesitter.configs'.setup {
+  ensure_installed = { "cpp","python","javascript","ruby","java","rust" } , -- one of "all", "maintained" (parsers with maintainers), or a list of languages
+  ignore_install = { "javascript" }, -- List of parsers to ignore installing
+  highlight = {
+    enable = true,              -- false will disable the whole extension
+  },
+}
+EOF
 
 " Startify options
 let g:startify_change_to_dir = 0
