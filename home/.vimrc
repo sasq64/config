@@ -12,30 +12,25 @@ endif
 
 call plug#begin('~/.vim/plugged')
 
+Plug 'skywind3000/asyncrun.vim'
 Plug 'nvim-lua/popup.nvim'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
+Plug 'nvim-telescope/telescope-fzy-native.nvim'
 
-
-"Plug 'RishabhRD/popfix'
-"Plug 'RishabhRD/nvim-cheat.sh'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
-Plug 'dbeniamine/cheat.sh-vim'
-
-" Plug 'octol/vim-cpp-enhanced-highlight', { 'for': 'cpp' }
+Plug 'nvim-treesitter/playground'
+" Lisp/scheme smart indenter
 Plug 'eraserhd/parinfer-rust'
-" Plug 'guns/vim-sexp'
-" Plug 'tpope/vim-sexp-mappings-for-regular-people'
+
+" Separate syntax for local sections
 Plug 'inkarkat/vim-ingo-library'
 Plug 'tikhomirov/vim-glsl'
 Plug 'inkarkat/vim-SyntaxRange'
 
-"" Swap things
+" "" Swap things
 Plug 'tommcdo/vim-exchange'
-" flatbuffers syntax
-" Plug 'zchee/vim-flatbuffers'
 Plug 'leissa/vim-acme'
-" Plug 'wakatime/vim-wakatime'
 Plug 'udalov/kotlin-vim'
 
 
@@ -54,16 +49,12 @@ Plug 'tpope/vim-commentary'
 "" Like git-gutter, but for multiple systems
 Plug 'mhinz/vim-signify'
 "" Mercurial support
-" Plug 'ludovicchabant/vim-lawrencium'
 "" Define your own operators easily
 Plug 'vim-scripts/operator-user'
 "" Search in Dash from VIM
-" Plug 'rizzatti/dash.vim'
 Plug 'KabbAmine/zeavim.vim'
 "" Jump to include
 Plug 'micbou/a.vim'
-"" Run compile in background
-" Plug 'tpope/vim-dispatch'
 "" Fast file opener
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
@@ -74,13 +65,6 @@ Plug 'junegunn/goyo.vim'
 "" Silver searcher greping
 Plug 'rking/ag.vim'
 
-" Plug 'jackguo380/vim-lsp-cxx-highlight'
-" let g:lsp_cxx_hl_use_text_props = 1
-" Personal Wiki / TODO / NOTES
-" Plug 'vimwiki/vimwiki'
-
-" Plug 'vim-ctrlspace/vim-ctrlspace'
-
 " Display file outline
 Plug 'majutsushi/tagbar'
 Plug 'editorconfig/editorconfig-vim'
@@ -88,26 +72,9 @@ Plug 'editorconfig/editorconfig-vim'
 
 "" Switch order of arguments
 Plug 'AndrewRadev/sideways.vim'
-
-"" For text writing
-" Plug 'reedes/vim-pencil'
-
-" Plug 'embear/vim-foldsearch'
-
-" Find and replace in multiple files
-" Plug 'brooth/far.vim'
-" Plug 'aserebryakov/vim-todo-lists'
-" Plug 'godlygeek/tabular'
-" Plug 'plasticboy/vim-markdown'
-" Plug 'JamshedVesuna/vim-markdown-preview'
-
 " Switch word with alternatives
 Plug 'AndrewRadev/switch.vim'
-" Plug 'huawenyu/neogdb.vim'
 Plug 'itchyny/lightline.vim'
-" Plug 'kassio/neoterm'
-
-" Plug 'szw/vim-g'
 Plug 'preservim/nerdtree'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'ryanoasis/vim-devicons'
@@ -123,7 +90,6 @@ if !exists('g:vscode')
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'Valloric/YouCompleteMe', { 'for': ['java', 'rust'] }
 Plug 'neomake/neomake'
-" Plug 'dense-analysis/ale'
 endif
 
 Plug 'pboettch/vim-cmake-syntax'
@@ -150,11 +116,45 @@ Plug 'dart-lang/dart-vim-plugin'
 Plug 'pangloss/vim-javascript'
 
 
-"" Plug 'w0rp/ale'
 call plug#end()
 
 "" DISABLED PLUGINS
 
+" Plug 'dbeniamine/cheat.sh-vim'
+"Plug 'RishabhRD/popfix'
+"Plug 'RishabhRD/nvim-cheat.sh'
+" Plug 'octol/vim-cpp-enhanced-highlight', { 'for': 'cpp' }
+" flatbuffers syntax
+" Plug 'zchee/vim-flatbuffers'
+" Plug 'wakatime/vim-wakatime'
+" Plug 'guns/vim-sexp'
+" Plug 'tpope/vim-sexp-mappings-for-regular-people'
+" Plug 'jackguo380/vim-lsp-cxx-highlight'
+" let g:lsp_cxx_hl_use_text_props = 1
+" Personal Wiki / TODO / NOTES
+" Plug 'vimwiki/vimwiki'
+
+" Plug 'vim-ctrlspace/vim-ctrlspace'
+
+"" For text writing
+" Plug 'reedes/vim-pencil'
+
+" Plug 'embear/vim-foldsearch'
+
+" Find and replace in multiple files
+" Plug 'brooth/far.vim'
+" Plug 'aserebryakov/vim-todo-lists'
+" Plug 'godlygeek/tabular'
+" Plug 'plasticboy/vim-markdown'
+" Plug 'JamshedVesuna/vim-markdown-preview'
+" Plug 'huawenyu/neogdb.vim'
+" Plug 'kassio/neoterm'
+
+" Plug 'szw/vim-g'
+
+
+"" Plug 'w0rp/ale'
+" Plug 'dense-analysis/ale'
 " Plug 'liuchengxu/vista.vim'
 " Plug 'arakashic/chromatica.nvim'
 "
@@ -460,7 +460,7 @@ nmap <leader>ad "zyiw:call FindDefine(@z)<cr>
 
 lua <<EOF
 require'nvim-treesitter.configs'.setup {
-  ensure_installed = { "cpp","python","javascript","ruby","java","rust" } , -- one of "all", "maintained" (parsers with maintainers), or a list of languages
+  ensure_installed = { "cpp","python","javascript","ruby","java","rust", "html", "query" } , -- one of "all", "maintained" (parsers with maintainers), or a list of languages
   ignore_install = { "javascript" }, -- List of parsers to ignore installing
   highlight = {
     enable = true,              -- false will disable the whole extension
@@ -511,6 +511,7 @@ require('telescope').setup {
     layout_strategy = "vertical",
   }
 }
+require('telescope').load_extension('fzy_native')
 EOF
 
 set noshowmode
@@ -531,9 +532,9 @@ let g:lightline = {
       \ },
       \ }
 
-autocmd Syntax * call SyntaxRange#Include('R"gl(', ')gl"', 'glsl')
-autocmd Syntax * call SyntaxRange#Include('R"lua(', ')lua"', 'lua')
-autocmd Syntax * call SyntaxRange#Include('R"md(', ')md"', 'markdown')
+" autocmd Syntax * call SyntaxRange#Include('R"gl(', ')gl"', 'glsl')
+" autocmd Syntax * call SyntaxRange#Include('R"lua(', ')lua"', 'lua')
+" autocmd Syntax * call SyntaxRange#Include('R"md(', ')md"', 'markdown')
 
 
 let g:neomake_cpp_enabled_makers = ['clang']
@@ -796,7 +797,15 @@ endif
 nnoremap <c-q> :GitFiles<CR>
 nnoremap <c-p> :Telescope find_files<cr>
 nnoremap <c-g> :Telescope live_grep<cr>
-nnoremap <c-h> :Telescope old_files<cr>
+nnoremap <c-h> :Telescope oldfiles<cr>
+nnoremap <leader>tf :Telescope find_files<cr>
+nnoremap <leader>tl :Telescope live_grep<cr>
+nnoremap <leader>to :Telescope oldfiles<cr>
+nnoremap <leader>tm :Telescope manpages<cr>
+nnoremap <leader>tg :Telescope git_files<cr>
+nnoremap <leader>tc :Telescope git_commits<cr>
+nnoremap <leader>tt :Telescope treesitter<cr>
+nnoremap <leader>ti :Telescope current_buffer_fuzzy_find<cr>
 
 " nnoremap <c-f> :PickerEdit<CR>
 " nnoremap <c-b> :PickerBuffer<CR>
