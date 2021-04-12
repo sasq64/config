@@ -12,6 +12,8 @@ endif
 
 call plug#begin('~/.vim/plugged')
 
+Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install'  }
+
 Plug 'skywind3000/asyncrun.vim'
 Plug 'nvim-lua/popup.nvim'
 Plug 'nvim-lua/plenary.nvim'
@@ -26,7 +28,8 @@ Plug 'eraserhd/parinfer-rust'
 " Separate syntax for local sections
 Plug 'inkarkat/vim-ingo-library'
 Plug 'tikhomirov/vim-glsl'
-Plug 'inkarkat/vim-SyntaxRange'
+" Plug 'inkarkat/vim-SyntaxRange'
+
 
 " "" Swap things
 Plug 'tommcdo/vim-exchange'
@@ -89,7 +92,6 @@ if !exists('g:vscode')
 "" Advanced auto completion
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'Valloric/YouCompleteMe', { 'for': ['java', 'rust'] }
-Plug 'neomake/neomake'
 endif
 
 Plug 'pboettch/vim-cmake-syntax'
@@ -120,6 +122,7 @@ call plug#end()
 
 "" DISABLED PLUGINS
 
+" Plug 'neomake/neomake'
 " Plug 'dbeniamine/cheat.sh-vim'
 "Plug 'RishabhRD/popfix'
 "Plug 'RishabhRD/nvim-cheat.sh'
@@ -437,25 +440,6 @@ let g:tagbar_type_d = {
 
 " }}}
 
-" ######## Brute force find {{{
-function! FindFunction(name)
- cexpr! system('ag --vimgrep -G ".(cs\|c\|cpp\|d\|h\|js\|java)$" "[A-Za-z\*]+\s+([A-Za-z_]+::)?' . a:name . '\s*\([^\)]*\)(\s+[a-z]+)*\s*(?=\{)"')
-endfunction
-
-function! FindClass(name)
- cexpr! system('ag --vimgrep -G ".(cs\|c\|cpp\|d\|h\|js\|java)$" "(class\|struct\|interface\|namespace)\s+([A-Za-z_]+\s+)*' . a:name . '\s+(?!;)"')
-endfunction
-
-function! FindDefine(name)
- cexpr! system('ag --vimgrep -G ".(c\|cpp\|h)$" "define\s+' . a:name . '(\s\|\()"')
-endfunction
-
-nmap <leader>af "zyiw:call FindFunction(@z)<cr>
-nmap <leader>ac "zyiw:call FindClass(@z)<cr>
-nmap <leader>ad "zyiw:call FindDefine(@z)<cr>
-
-" }}}
-
 " ######## Plugin settings {{{
 
 lua <<EOF
@@ -532,88 +516,10 @@ let g:lightline = {
       \ },
       \ }
 
-" autocmd Syntax * call SyntaxRange#Include('R"gl(', ')gl"', 'glsl')
-" autocmd Syntax * call SyntaxRange#Include('R"lua(', ')lua"', 'lua')
-" autocmd Syntax * call SyntaxRange#Include('R"md(', ')md"', 'markdown')
-
-
-let g:neomake_cpp_enabled_makers = ['clang']
-let g:neomake_cpp_clang_maker = {'exe': 'clang'}
-let g:neomake_cpp_clang_args = ['-std=c++14', '-Wall', '-Wextra', '-Weverything', '-pedantic']
-
-let vim_markdown_preview_github = 1
-let g:vim_markdown_folding_disabled = 1
-
-" augroup vimtodolists_auto_commands2
-"     autocmd!
-"     autocmd BufRead,BufNewFile TODO call VimTodoListsInit()
-" augroup end
-
-" autocmd FileType java setlocal omnifunc=javacomplete#Complete
-
-if !exists('g:vscode')
 
 let g:ycm_auto_trigger = 1
 let g:ycm_rust_src_path = '/home/sasq/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/src'
 
-let g:ale_linters = {'cpp': [ 'cc', 'clangd', 'clangtidy' ], 'c' : ['cc']}
-let g:ale_sign_warning = '⚠'
-let g:ale_sign_error = '❌'
-let g:ale_sign_highlight_linenrs  = 1
-" let g:ale_virtualtext_cursor = 1
-if has('macunix')
-    let g:ale_cpp_clangtidy_executable = '/usr/local/Cellar/llvm/7.0.1/bin/clang-tidy'
-    "let g:ycm_clangd_binary_path = '/Users/jonasm/sdk/clang+llvm-8.0.0-x86_64-apple-darwin/bin/clangd'
-else
-    let g:ale_cpp_clangtidy_executable = 'clang-tidy'
-    "let g:ycm_clangd_binary_path = '/opt/clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-18.04/bin/clangd'
-endif
-
-" let g:ale_c_build_dir_names = [ 'build', 'builds/debug', 'bin' ]
-" let g:ale_linters = {
-" \   'cpp': ['clangtidy' ]
-" \}
-" if has('macunix')
-"   let g:ale_cpp_clangtidy_executable = '/home/sasq/clangtidy.py'
-" else
-"   let g:ale_cpp_clangtidy_executable = 'clang-tidy'
-" endif
-
-" if has('macunix')
-"     let g:ale_cpp_clang_executable = '/usr/local/opt/llvm/bin/clang++'
-" else
-" endif
-" let g:ale_cpp_clangtidy_checks = [
-"             \ '*',
-"             \ '-*braces-around-statements',
-"             \ '-cert-err58-cpp',
-"             \ '-cppcoreguidelines-pro-type-union-access',
-"             \ '-fuchsia-*'
-" \]
-
-endif
-
-let wiki = {}
-let wiki.path = '~/Dropbox/conf/vimwiki/'
-let wiki.nested_syntaxes = {'python': 'python', 'c++': 'cpp'}
-let g:vimwiki_list = [wiki]
-
-" let g:ycm_global_ycm_extra_conf = '~/.vim/ycm_extra_conf.py'
-
-let g:dash_map = {
-        \ 'd' : ['d', 'gl4', 'sod']
-        \ }
-
-let g:CommandTMaxFiles = 500000
-" let g:CommandTFileScanner = 'find'
-"
-
-" let g:switch_custom_definitions =
-"             \ [
-"             \ [ 'emplace_back', 'push_back' ],
-"             \ [ 'width', 'height' ],
-"             \ [ 'lock', 'unlock' ],
-"             \ ]
 
 let g:switch_custom_definitions = [
     \ [ 'true', 'false' ],
@@ -631,7 +537,6 @@ let g:switch_custom_definitions = [
     \ }
     \ ]
 
-"\     '[^A-Za-z_>]\zs(\([a-zA-Z_\*]\+\))': 'static_cast<\1>',
 " }}}
 
 " ######## Keyboard mappings {{{
@@ -795,7 +700,7 @@ endif
 
 " Open files with `fzf`
 nnoremap <c-q> :GitFiles<CR>
-nnoremap <c-p> :Telescope find_files<cr>
+nnoremap <c-p> :Files<cr>
 nnoremap <c-g> :Telescope live_grep<cr>
 nnoremap <c-h> :Telescope oldfiles<cr>
 nnoremap <leader>tf :Telescope find_files<cr>
