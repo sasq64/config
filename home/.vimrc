@@ -13,13 +13,13 @@ endif
 call plug#begin('~/.vim/plugged')
 
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install'  }
-
+Plug 'vim-test/vim-test'
+Plug 'vim-ruby/vim-ruby'
 Plug 'skywind3000/asyncrun.vim'
 Plug 'nvim-lua/popup.nvim'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'nvim-telescope/telescope-fzy-native.nvim'
-
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'nvim-treesitter/playground'
 " Lisp/scheme smart indenter
@@ -85,6 +85,9 @@ Plug 'ryanoasis/vim-devicons'
 Plug 'mhinz/vim-startify'
 
 "" Lanugages
+
+Plug 'Omnisharp/omnisharp-vim'
+Plug 'dense-analysis/ale'
 
 "" Generic
 
@@ -157,7 +160,6 @@ call plug#end()
 
 
 "" Plug 'w0rp/ale'
-" Plug 'dense-analysis/ale'
 " Plug 'liuchengxu/vista.vim'
 " Plug 'arakashic/chromatica.nvim'
 "
@@ -240,6 +242,7 @@ set linebreak
 set modeline
 set modelines=5
 
+set expandtab
 set tabstop=4
 set shiftwidth=4
 set textwidth=0
@@ -273,7 +276,7 @@ set efm+=,%f\(%l\\,%c):\ %m
 set wildignore="*.o,*.obj,*.a,*.lib,*.dylib,*/.git,*/.hg,build,artifacts"
 set termguicolors
 colorscheme one
-
+set background=dark
 set expandtab  
 set nolist
 
@@ -678,10 +681,17 @@ function! RefRename()
 endfunction
 
 autocmd filetype java  nnoremap <buffer> <leader>f :YcmCompleter FixIt<CR>
-autocmd filetype java  nnoremap <buffer> <F12> :YcmCompleter GoTo<CR>
-autocmd filetype java  nnoremap <buffer> <F24> :YcmCompleter GoToReferences<CR>
-autocmd filetype java  nnoremap <buffer> <F2> :call RefRename()<CR>
+autocmd filetype java nnoremap <buffer> <F12> :YcmCompleter GoTo<CR>
+autocmd filetype java nnoremap <buffer> <F24> :YcmCompleter GoToReferences<CR>
+autocmd filetype java nnoremap <buffer> <F2> :call RefRename()<CR>
 autocmd filetype c,cpp inoremap <silent><expr> <c-space> coc#refresh()
+
+autocmd filetype cs nnoremap <buffer> <F12> :OmniSharpGotoDefinition<CR>
+autocmd filetype cs nnoremap <buffer> <F24> :OmniSharpFindUsages<CR>
+autocmd filetype cs nnoremap <buffer> <F2> :OmniSharpRename<CR>
+
+let g:ale_linters = { 'cs': ['OmniSharp'] }
+let g:ale_lint_on_text_changed = 1
 
 "autocmd FileType d nnoremap <F12> :DUjump<CR>
 
