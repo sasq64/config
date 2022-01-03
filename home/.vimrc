@@ -267,6 +267,8 @@ set cursorline
 set clipboard=unnamed,unnamedplus
 nnoremap Y y$
 
+autocmd Filetype ruby setlocal sw=2 ts=2
+
 packadd termdebug
 
 "" C# error message
@@ -297,7 +299,6 @@ autocmd! GUIEnter * set vb t_vb= " Turn off visual bell in GUI mode
 
 autocmd FileType vim setlocal foldmethod=marker
 autocmd FileType javascript setlocal shiftwidth=4 expandtab
-autocmd FileType ruby setlocal shiftwidth=4 expandtab
 
 augroup quickfix
     autocmd!
