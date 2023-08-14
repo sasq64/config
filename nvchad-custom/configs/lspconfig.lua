@@ -16,6 +16,7 @@ local cmp_nvim_lsp = require "cmp_nvim_lsp"
 lspconfig.pyright.setup {
   on_attach = on_attach,
   capabilities = capabilities,
+  filetypes = {"python"},
 }
 
 lspconfig.clangd.setup {
