@@ -50,6 +50,7 @@ M.debugging = {
 
 M.mine = {
     n = {
+        ["<c-p>"] = { "<cmd> Telescope find_files <CR>", "Find files" },
         ["<tab>"] = { "<cmd> bnext <CR>", "Next buffer"},
         ["<S-tab>"] = { "<cmd> bprev <CR>", "Previous buffer"},
         ["<c-b>"] = { "<cmd> Telescope buffers <CR>", "Find buffers" },

@@ -125,7 +125,7 @@ local plugins = {
   {
     "folke/trouble.nvim",
     dependencies = { "nvim-tree/nvim-web-devicons" },
-    keys = { { "<leader>tt",  function() require("trouble").open() end, "Toggle Trouble" } },
+    keys = { { "<leader>tt", "<Cmd> TroubleToggle <cr>", desc="Toggle Trouble" } },
     opts = {
     }
   },
@@ -134,8 +134,7 @@ local plugins = {
     version = "*",
     event = "VeryLazy",
     config = function()
-      require("nvim-surround").setup({
-      })
+      require("nvim-surround").setup()
     end
   },
   {
