@@ -14,21 +14,7 @@ local plugins = {
     end,
   },
   {
-    "mfussenegger/nvim-dap-python",
-    ft = "python",
-    dependencies = {
-      "mfussenegger/nvim-dap",
-      "rcarriga/nvim-dap-ui",
-    },
-    config = function(_, opts)
-      local path = "/opt/homebrew/bin/python3"
-      require("dap-python").setup(path)
-      -- require("core.utils").load_mappings("dap_python")
-    end,
-  },
-  {
     "rcarriga/nvim-dap-ui",
-    event = "VeryLazy",
     dependencies = "mfussenegger/nvim-dap",
     config = function()
       local dap = require("dap")
@@ -46,18 +32,21 @@ local plugins = {
     end
   },
   {
-    "jay-babu/mason-nvim-dap.nvim",
-    event = "VeryLazy",
+    "mfussenegger/nvim-dap-python",
+    ft = "python",
     dependencies = {
-      "williamboman/mason.nvim",
       "mfussenegger/nvim-dap",
+      "rcarriga/nvim-dap-ui",
     },
-    opts = {
-      handlers = {}
-    },
+    config = function(_, opts)
+      local path = "~/.local/bin/python3"
+      require("dap-python").setup(path)
+      -- require("core.utils").load_mappings("dap_python")
+    end,
   },
   {
     "mfussenegger/nvim-dap",
+    event = "VeryLazy",
     config = function(_, _)
       require("core.utils").load_mappings("dap")
       vim.api.nvim_set_hl(0, 'DapBreakpoint', { ctermbg = 0, fg = '#993939' })
@@ -78,6 +67,17 @@ local plugins = {
         "codelldb"
       }
     }
+  },
+  {
+    "jay-babu/mason-nvim-dap.nvim",
+    event = "VeryLazy",
+    dependencies = {
+      "williamboman/mason.nvim",
+      "mfussenegger/nvim-dap",
+    },
+    opts = {
+      handlers = {}
+    },
   },
   -- {
   --   "Darazaki/indent-o-matic",
@@ -124,8 +124,8 @@ local plugins = {
   },
   {
     "folke/trouble.nvim",
-    event = "VeryLazy",
     dependencies = { "nvim-tree/nvim-web-devicons" },
+    keys = { { "<leader>tt",  function() require("trouble").open() end, "Toggle Trouble" } },
     opts = {
     }
   },
