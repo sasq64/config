@@ -58,8 +58,10 @@ local plugins = {
   },
   {
     "mfussenegger/nvim-dap",
-     config = function(_, _)
+    config = function(_, _)
       require("core.utils").load_mappings("dap")
+      vim.api.nvim_set_hl(0, 'DapBreakpoint', { ctermbg = 0, fg = '#993939' })
+      vim.fn.sign_define('DapBreakpoint',{ text ='●', texthl ='DapBreakpoint', linehl ='', numhl =''})
     end
   },
   {
@@ -77,41 +79,73 @@ local plugins = {
       }
     }
   },
+  -- {
+  --   "Darazaki/indent-o-matic",
+  --   event = "VeryLazy",
+  -- },
+  {
+    "nmac427/guess-indent.nvim",
+    event = "VeryLazy",
+    config = function() require('guess-indent').setup {} end
+  },
   {
     "folke/which-key.nvim",
-     opts = {
-            key_labels = {
-                ["<cr>"] = "⏎",
-                ["<leader>"] = "󱁐 ",
-            }
-        }
+    opts = {
+      key_labels = {
+        ["<cr>"] = "⏎",
+        ["<leader>"] = "󱁐 ",
+      }
+    }
   },
   {
     "nvim-treesitter/nvim-treesitter",
     opts = {
-        ensure_installed = {
-          -- defaults 
-          "vim",
-          "lua",
+      ensure_installed = {
+      -- defaults 
+      "vim",
+      "lua",
 
-          -- web dev 
-          "html",
-          "css",
-          "javascript",
-          "typescript",
-          "tsx",
-          "json",
-          -- "vue", "svelte",
-          "ruby",
-          "python",
+      -- web dev 
+      "html",
+      "css",
+      "javascript",
+      "typescript",
+      "tsx",
+      "json",
+      -- "vue", "svelte",
+      "ruby",
+      "python",
 
-         -- low level
-          "c_sharp",
-          "cpp"
+     -- low level
+      "c_sharp",
+      "cpp"
       },
     },
+  },
+  {
+    "folke/trouble.nvim",
+    event = "VeryLazy",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    opts = {
+    }
+  },
+  {
+    "kylechui/nvim-surround",
+    version = "*",
+    event = "VeryLazy",
+    config = function()
+      require("nvim-surround").setup({
+      })
+    end
+  },
+  {
+    'Wansmer/sibling-swap.nvim',
+    event = "VeryLazy",
+    requires = { 'nvim-treesitter' },
+    config = function()
+      require('sibling-swap').setup({--[[ your config ]]})
+    end,
   }
 }
-
 return plugins
 
