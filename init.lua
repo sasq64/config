@@ -364,6 +364,12 @@ require("lazy").setup({
 						require("telescope.themes").get_dropdown(),
 					},
 				},
+				pickers = {
+					buffers = {
+						ignore_current_buffer = true,
+						sort_lastused = true,
+					},
+				},
 			})
 
 			-- Enable Telescope extensions if they are installed
@@ -375,7 +381,6 @@ require("lazy").setup({
 			vim.keymap.set("n", "<leader>sh", builtin.help_tags, { desc = "[S]earch [H]elp" })
 			vim.keymap.set("n", "<leader>sk", builtin.keymaps, { desc = "[S]earch [K]eymaps" })
 			vim.keymap.set("n", "<leader>sf", builtin.find_files, { desc = "[S]earch [F]iles" })
-			vim.keymap.set("n", "<c-p>", builtin.find_files, { desc = "[S]earch [F]iles" })
 			vim.keymap.set("n", "<leader>ss", builtin.builtin, { desc = "[S]earch [S]elect Telescope" })
 			vim.keymap.set("n", "<leader>sw", builtin.grep_string, { desc = "[S]earch current [W]ord" })
 			vim.keymap.set("n", "<leader>sg", builtin.live_grep, { desc = "[S]earch by [G]rep" })
@@ -805,23 +810,6 @@ require("lazy").setup({
 		dependencies = { "nvim-lua/plenary.nvim" },
 		opts = { signs = false },
 	},
-	{
-		"simrat39/rust-tools.nvim",
-		config = function()
-			local rt = require("rust-tools")
-			rt.setup({
-				server = {
-					on_attach = function(_, bufnr)
-						-- Hover actions
-						vim.keymap.set("n", "<C-space>", rt.hover_actions.hover_actions, { buffer = bufnr })
-						-- Code action groups
-						vim.keymap.set("n", "<Leader>a", rt.code_action_group.code_action_group, { buffer = bufnr })
-					end,
-				},
-			})
-		end,
-	},
-
 	{ -- Collection of various small independent plugins/modules
 		"echasnovski/mini.nvim",
 		config = function()
@@ -914,6 +902,28 @@ require("lazy").setup({
 	--  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
 	--    For additional information, see `:help lazy.nvim-lazy.nvim-structuring-your-plugins`
 	-- { import = 'custom.plugins' },
+	--
+	--
+	-- ################# MY PLUGINS HERE
+
+	{
+		"simrat39/rust-tools.nvim",
+		config = function()
+			local rt = require("rust-tools")
+			rt.setup({
+				server = {
+					on_attach = function(_, bufnr)
+						-- Hover actions
+						vim.keymap.set("n", "<C-space>", rt.hover_actions.hover_actions, { buffer = bufnr })
+						-- Code action groups
+						vim.keymap.set("n", "<Leader>a", rt.code_action_group.code_action_group, { buffer = bufnr })
+					end,
+				},
+			})
+		end,
+	},
+
+	--
 }, {
 	ui = {
 		-- If you are using a Nerd Font: set icons to an empty table which will use the
@@ -935,6 +945,13 @@ require("lazy").setup({
 		},
 	},
 })
+
+-- #################### MY SETTINGS HERE
+
+vim.keymap.set("n", "<c-s>", "<cmd>w<CR>")
+local builtin = require("telescope.builtin")
+vim.keymap.set("n", "<c-p>", builtin.find_files, { desc = "[S]earch [F]iles" })
+vim.keymap.set("n", "<c-b>", builtin.buffers, { desc = "[ ] Find existing buffers" })
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
