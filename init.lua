@@ -436,6 +436,13 @@ require("lazy").setup({
 			-- used for completion, annotations and signatures of Neovim apis
 			{ "folke/neodev.nvim", opts = {} },
 		},
+		opts = {
+			setup = {
+				rust_analyzer = function()
+					return true
+				end,
+			},
+		},
 		config = function()
 			-- Brief aside: **What is LSP?**
 			--
@@ -914,32 +921,42 @@ require("lazy").setup({
 	{
 		"folke/trouble.nvim",
 		dependencies = { "nvim-tree/nvim-web-devicons" },
-		opts = {
-			-- your configuration comes here
-			-- or leave it empty to use the default settings
-			-- refer to the configuration section below
-		},
+		opts = {},
 	},
 	{
-		"simrat39/rust-tools.nvim",
-		config = function()
-			local rt = require("rust-tools")
-			rt.setup({
-				server = {
-					on_attach = function(_, bufnr)
-						-- Hover actions
-						vim.keymap.set("n", "<C-space>", rt.hover_actions.hover_actions, { buffer = bufnr })
-						-- Code action groups
-						vim.keymap.set("n", "<Leader>a", rt.code_action_group.code_action_group, { buffer = bufnr })
-					end,
-				},
-			})
-		end,
+		"mfussenegger/nvim-dap",
 	},
+	{
+		"mrcjkb/rustaceanvim",
+		version = "^4", -- Recommended
+		lazy = false, -- This plugin is already lazy
+	},
+	-- {
+	-- 	"simrat39/rust-tools.nvim",
+	-- 	config = function()
+	-- 		local rt = require("rust-tools")
+	-- 		rt.setup({
+	-- 			server = {
+	-- 				on_attach = function(_, bufnr)
+	-- 					-- Hover actions
+	-- 					vim.keymap.set("n", "<C-space>", rt.hover_actions.hover_actions, { buffer = bufnr })
+	-- 					-- Code action groups
+	-- 					vim.keymap.set("n", "<Leader>a", rt.code_action_group.code_action_group, { buffer = bufnr })
+	-- 				end,
+	-- 			},
+	-- 		})
+	-- 	end,
+	-- },
 	{
 		"nvim-tree/nvim-tree.lua",
 		config = function()
 			require("nvim-tree").setup()
+		end,
+	},
+	{
+		"petertriho/nvim-scrollbar",
+		config = function()
+			require("scrollbar").setup()
 		end,
 	},
 
@@ -969,13 +986,51 @@ require("lazy").setup({
 -- #################### MY SETTINGS HERE
 
 vim.keymap.set("n", "<f7>", "<cmd>make build<CR>")
+vim.keymap.set("n", "<f5>", "<cmd>make run<CR>")
 vim.keymap.set("n", "<c-f6>", "<cmd>cn<CR>")
 vim.keymap.set("n", "<c-s>", "<cmd>w<CR>")
+vim.keymap.set("i", "<c-s>", "<cmd>w<CR>")
 local builtin = require("telescope.builtin")
 vim.keymap.set("n", "<c-p>", builtin.find_files, { desc = "[S]earch [F]iles" })
 vim.keymap.set("n", "<c-b>", builtin.buffers, { desc = "[ ] Find existing buffers" })
-vim.keymap.set("n", "<leader>n", "<cmd>NvimTreeToggle<cr>", { desc = "[ ] Toggle Tree" })
+vim.keymap.set("n", "<leader>n", "<cmd>NvimTreeToggle<cr>", { desc = "Toggle [N] NvimTree" })
 vim.keymap.set("n", "<leader>tt", "<cmd>TroubleToggle<cr>", { desc = "[T] Toggle [T] Trouble" })
 
+-- get git folder
+local function get_git_dir()
+	local git_dir = vim.fn.trim(vim.fn.system("git rev-parse --show-toplevel"))
+	return git_dir
+end
+
+live_grep_gitdir = function()
+	local git_dir = get_git_dir()
+	if git_dir == "" then
+		builtin.live_grep()
+	else
+		builtin.live_grep({
+			cwd = git_dir,
+		})
+	end
+end
+
+old_gitdir = function()
+	local git_dir = get_git_dir()
+	if git_dir == "" then
+		builtin.oldfiles()
+	else
+		builtin.oldfiles({
+			cwd = git_dir,
+		})
+	end
+end
+
+vim.keymap.set("n", "<c-h>", old_gitdir, { desc = "[S]earch [H]istory" })
+vim.keymap.set("n", "<leader>sg", live_grep_gitdir, { desc = "[S] Search [G] Git project" })
+
+-- autocmd TermOpen * startinsert
+
+vim.api.nvim_create_autocmd("TermOpen", {
+	command = "startinsert",
+})
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
