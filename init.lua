@@ -925,6 +925,26 @@ require("lazy").setup({
 	},
 	{
 		"mfussenegger/nvim-dap",
+		config = function()
+			local dap = require("dap")
+			dap.adapters.codelldb = {
+				type = "server",
+				host = "127.0.0.1",
+				port = 13000,
+			}
+			-- local mason_registry = require("mason-registry")
+			-- local codelldb = mason_registry.get_package("codelldb")
+			-- local clpath = codelldb:get_install_path()
+			-- dap.adapters.codelldb = {
+			-- 	type = "server",
+			-- 	port = "${port}",
+			-- 	executable = {
+			-- 		-- CHANGE THIS to your path!
+			-- 		command = clpath,
+			-- 		args = { "--port", "${port}" },
+			-- 	},
+			-- }
+		end,
 	},
 	{
 		"mrcjkb/rustaceanvim",
@@ -991,7 +1011,6 @@ vim.keymap.set("n", "<c-f6>", "<cmd>cn<CR>")
 vim.keymap.set("n", "<c-s>", "<cmd>w<CR>")
 vim.keymap.set("i", "<c-s>", "<cmd>w<CR>")
 local builtin = require("telescope.builtin")
-vim.keymap.set("n", "<c-p>", builtin.find_files, { desc = "[S]earch [F]iles" })
 vim.keymap.set("n", "<c-b>", builtin.buffers, { desc = "[ ] Find existing buffers" })
 vim.keymap.set("n", "<leader>n", "<cmd>NvimTreeToggle<cr>", { desc = "Toggle [N] NvimTree" })
 vim.keymap.set("n", "<leader>tt", "<cmd>TroubleToggle<cr>", { desc = "[T] Toggle [T] Trouble" })
@@ -999,6 +1018,9 @@ vim.keymap.set("n", "<leader>tt", "<cmd>TroubleToggle<cr>", { desc = "[T] Toggle
 -- get git folder
 local function get_git_dir()
 	local git_dir = vim.fn.trim(vim.fn.system("git rev-parse --show-toplevel"))
+	if string.find(git_dir, "fatal: ") then
+		return ""
+	end
 	return git_dir
 end
 
@@ -1024,8 +1046,21 @@ old_gitdir = function()
 	end
 end
 
+files_gitdir = function()
+	local git_dir = get_git_dir()
+	if git_dir == "" then
+		builtin.find_files()
+	else
+		builtin.find_files({
+			cwd = git_dir,
+		})
+	end
+end
+
+vim.keymap.set("n", "<c-p>", files_gitdir, { desc = "[S]earch [F]iles" })
 vim.keymap.set("n", "<c-h>", old_gitdir, { desc = "[S]earch [H]istory" })
-vim.keymap.set("n", "<leader>sg", live_grep_gitdir, { desc = "[S] Search [G] Git project" })
+vim.keymap.set("n", "<leader>sg", files_gitdir, { desc = "[S] Search [G] Git project" })
+vim.keymap.set("n", "<leader>sG", live_grep_gitdir, { desc = "[S] Search [G] Git Grep" })
 
 -- autocmd TermOpen * startinsert
 
