@@ -14,8 +14,8 @@ end
 --
 local function scheme_for_appearance(appearance)
 	if appearance:find("Dark") then
-		return "Catppuccin Macchiato"
-	-- return 'Hardcore'
+		--	return "Catppuccin Macchiato"
+		return "Dark Pastel"
 	else
 		return "Catppuccin Latte"
 	end
@@ -23,9 +23,21 @@ end
 
 -- For example, changing the color scheme:
 config.color_scheme = scheme_for_appearance(wezterm.gui.get_appearance())
-
+local act = wezterm.action
 config.keys = {
-	{ key = "Enter", mods = "CMD", action = wezterm.action.QuickSelect },
+	{ key = "Enter", mods = "CMD", action = act.QuickSelect },
+	{ key = "1", mods = "ALT", action = act.ActivateTab(0) },
+	{ key = "2", mods = "ALT", action = act.ActivateTab(1) },
+	{ key = "3", mods = "ALT", action = act.ActivateTab(2) },
+	{ key = "4", mods = "ALT", action = act.ActivateTab(3) },
+	{ key = "LeftArrow", mods = "ALT", action = act.ActivatePaneDirection("Left") },
+	{ key = "RightArrow", mods = "ALT", action = act.ActivatePaneDirection("Right") },
+	{ key = "UpArrow", mods = "ALT", action = act.ActivatePaneDirection("Up") },
+	{ key = "DownArrow", mods = "ALT", action = act.ActivatePaneDirection("Down") },
+	{ key = "LeftArrow", mods = "SHIFT|CTRL", action = act.AdjustPaneSize({ "Left", 1 }) },
+	{ key = "RightArrow", mods = "SHIFT|CTRL", action = act.AdjustPaneSize({ "Right", 1 }) },
+	{ key = "UpArrow", mods = "SHIFT|CTRL", action = act.AdjustPaneSize({ "Up", 1 }) },
+	{ key = "DownArrow", mods = "SHIFT|CTRL", action = act.AdjustPaneSize({ "Down", 1 }) },
 }
 
 config.window_padding = {
