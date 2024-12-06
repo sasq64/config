@@ -446,16 +446,6 @@ let g:tagbar_type_d = {
 
 " ######## Plugin settings {{{
 
-lua <<EOF
-require'nvim-treesitter.configs'.setup {
-  ensure_installed = { "cpp","python","javascript","ruby","java","rust", "html", "query" } , -- one of "all", "maintained" (parsers with maintainers), or a list of languages
-  ignore_install = { "javascript" }, -- List of parsers to ignore installing
-  highlight = {
-    enable = true,              -- false will disable the whole extension
-  },
-}
-EOF
-
 " Startify options
 let g:startify_change_to_dir = 0
 let g:startify_change_to_vcs_root = 1
@@ -483,24 +473,6 @@ autocmd FileType cmake setlocal commentstring=#\ %s
 
 let g:CheatDoNotReplaceKeywordPrg=1
 let g:CheatSheetShowCommentsByDefault=1
-
-lua << EOF
-require('telescope').setup {
-  defaults = {
-    layout_defaults = {
-      vertical = {
-        width_padding = 0.05,
-        height_padding = 1,
-        preview_height = 0.7,
-      },
-    },
-    preview_cutoff = 80,
-    results_height = 60,
-    layout_strategy = "vertical",
-  }
-}
-require('telescope').load_extension('fzy_native')
-EOF
 
 set noshowmode
 let g:lightline = {

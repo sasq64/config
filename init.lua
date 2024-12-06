@@ -994,6 +994,12 @@ require("lazy").setup({
 			require("openscad").setup()
 		end,
 	},
+	{
+		"ggandor/leap.nvim",
+		config = function()
+			require("leap").create_default_mappings()
+		end,
+	},
 
 	--
 }, {
