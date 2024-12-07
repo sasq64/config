@@ -1,0 +1,4 @@
+[manager]
+append_keymap = [
+    { on = "d", run = "remove --force", desc = "Trash selected files" }
+]

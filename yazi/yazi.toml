@@ -1,0 +1,9 @@
+[opener]
+music = [
+    { run = 'msxp -d "$@"', orphan = true, for = "unix" },
+]
+
+[open]
+prepend_rules = [
+	{ name = "*.{mp3,sid,xm,mod,sndh,s3m,rsn,nsfe,mdat,psf}", use = "music" },
+]
