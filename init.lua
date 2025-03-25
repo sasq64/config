@@ -1,3 +1,4 @@
+---@diagnostic disable: missing-fields
 --[[
 
 =====================================================================
@@ -418,6 +419,27 @@ require("lazy").setup({
 			end, { desc = "[S]earch [N]eovim files" })
 		end,
 	},
+	{
+		"folke/lazydev.nvim",
+		ft = "lua", -- only load on lua files
+		opts = {
+			library = {
+				-- See the configuration section for more details
+				-- Load luvit types when the `vim.uv` word is found
+				{ path = "${3rd}/luv/library", words = { "vim%.uv" } },
+			},
+		},
+	},
+	{ -- optional cmp completion source for require statements and module annotations
+		"hrsh7th/nvim-cmp",
+		opts = function(_, opts)
+			opts.sources = opts.sources or {}
+			table.insert(opts.sources, {
+				name = "lazydev",
+				group_index = 0, -- set group index to 0 to skip loading LuaLS completions
+			})
+		end,
+	},
 
 	{ -- LSP Configuration & Plugins
 		"neovim/nvim-lspconfig",
@@ -433,7 +455,7 @@ require("lazy").setup({
 
 			-- `neodev` configures Lua LSP for your Neovim config, runtime and plugins
 			-- used for completion, annotations and signatures of Neovim apis
-			{ "folke/neodev.nvim", opts = {} },
+			{ "folke/lazydev.nvim", opts = {} },
 		},
 		opts = {
 			setup = {
@@ -1000,6 +1022,28 @@ require("lazy").setup({
 			require("leap").create_default_mappings()
 		end,
 	},
+	{
+		"nvim-neotest/neotest",
+		dependencies = {
+			"nvim-neotest/nvim-nio",
+			"nvim-lua/plenary.nvim",
+			"antoinemadec/FixCursorHold.nvim",
+			"nvim-treesitter/nvim-treesitter",
+		},
+		config = function()
+			require("neotest").setup({
+				adapters = { require("neotest-python") },
+			})
+		end,
+	},
+	{
+		"nvim-neotest/neotest-python",
+		config = function()
+			require("neotest").setup({
+				adapters = { require("neotest-python") },
+			})
+		end,
+	},
 
 	--
 }, {
@@ -1045,7 +1089,7 @@ local function get_git_dir()
 	return git_dir
 end
 
-live_grep_gitdir = function()
+local live_grep_gitdir = function()
 	local git_dir = get_git_dir()
 	if git_dir == "" then
 		builtin.live_grep()
@@ -1056,7 +1100,7 @@ live_grep_gitdir = function()
 	end
 end
 
-old_gitdir = function()
+local old_gitdir = function()
 	local git_dir = get_git_dir()
 	if git_dir == "" then
 		builtin.oldfiles()
@@ -1067,7 +1111,7 @@ old_gitdir = function()
 	end
 end
 
-files_gitdir = function()
+local files_gitdir = function()
 	local git_dir = get_git_dir()
 	if git_dir == "" then
 		builtin.find_files()
