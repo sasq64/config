@@ -104,7 +104,8 @@ vim.g.have_nerd_font = true
 -- See `:help vim.opt`
 -- NOTE: You can change these options as you wish!
 --  For more options, you can see `:help option-list`
-
+--
+vim.opt.relativenumber = true
 -- Make line numbers default
 vim.opt.number = true
 -- You can also add relative line numbers, to help with jumping.
@@ -457,13 +458,13 @@ require("lazy").setup({
 			-- used for completion, annotations and signatures of Neovim apis
 			{ "folke/lazydev.nvim", opts = {} },
 		},
-		opts = {
-			setup = {
-				rust_analyzer = function()
-					return true
-				end,
-			},
-		},
+		-- opts = {
+		-- 	setup = {
+		-- 		rust_analyzer = function()
+		-- 			return true
+		-- 		end,
+		-- 	},
+		-- },
 		config = function()
 			-- Brief aside: **What is LSP?**
 			--
@@ -818,7 +819,12 @@ require("lazy").setup({
 			})
 		end,
 	},
-
+	{
+		"f-person/auto-dark-mode.nvim",
+		opts = {
+			update_interval = 1000,
+		},
+	},
 	{ -- You can easily change to a different colorscheme.
 		-- Change the name of the colorscheme plugin below, and then
 		-- change the command in the config to whatever the name of that colorscheme is.
@@ -979,7 +985,7 @@ require("lazy").setup({
 	},
 	{
 		"mrcjkb/rustaceanvim",
-		version = "^4", -- Recommended
+		version = "^6", -- Recommended
 		lazy = false, -- This plugin is already lazy
 	},
 	-- {
@@ -1126,6 +1132,12 @@ vim.keymap.set("n", "<c-p>", files_gitdir, { desc = "[S]earch [F]iles" })
 vim.keymap.set("n", "<c-h>", old_gitdir, { desc = "[S]earch [H]istory" })
 vim.keymap.set("n", "<leader>sg", files_gitdir, { desc = "[S] Search [G] Git project" })
 vim.keymap.set("n", "<leader>sG", live_grep_gitdir, { desc = "[S] Search [G] Git Grep" })
+
+vim.keymap.set("n", "<f2>", vim.lsp.buf.rename, { desc = "[S] Search [G] Git Grep" })
+vim.keymap.set("n", "<leader>cr", vim.lsp.buf.rename, { desc = "[C] Code [R] Rename" })
+vim.keymap.set("n", "<leader>ch", function()
+	vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+end, { desc = "[C] Code [H] Toggle hints" })
 
 -- autocmd TermOpen * startinsert
 
