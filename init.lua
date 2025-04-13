@@ -840,7 +840,7 @@ require("lazy").setup({
 			vim.cmd.colorscheme("tokyonight-night")
 
 			-- You can configure highlights by doing something like:
-			vim.cmd.hi("Comment gui=none")
+			vim.cmd.hi("Comment guifg=#a03030")
 		end,
 	},
 
@@ -1023,12 +1023,12 @@ require("lazy").setup({
 			require("openscad").setup()
 		end,
 	},
-	{
-		"ggandor/leap.nvim",
-		config = function()
-			require("leap").create_default_mappings()
-		end,
-	},
+	-- {
+	-- 	"ggandor/leap.nvim",
+	-- 	config = function()
+	-- 		require("leap").create_default_mappings()
+	-- 	end,
+	-- },
 	{
 		"nvim-neotest/neotest",
 		dependencies = {
@@ -1051,6 +1051,7 @@ require("lazy").setup({
 			})
 		end,
 	},
+	{ "EdenEast/nightfox.nvim" },
 
 	--
 }, {
@@ -1076,16 +1077,8 @@ require("lazy").setup({
 })
 
 -- #################### MY SETTINGS HERE
-
-vim.keymap.set("n", "<f7>", "<cmd>make build<CR>")
-vim.keymap.set("n", "<f5>", "<cmd>make run<CR>")
-vim.keymap.set("n", "<c-f6>", "<cmd>cn<CR>")
-vim.keymap.set("n", "<c-s>", "<cmd>w<CR>")
-vim.keymap.set("i", "<c-s>", "<cmd>w<CR>")
+--
 local builtin = require("telescope.builtin")
-vim.keymap.set("n", "<c-b>", builtin.buffers, { desc = "[ ] Find existing buffers" })
-vim.keymap.set("n", "<leader>n", "<cmd>NvimTreeToggle<cr>", { desc = "Toggle [N] NvimTree" })
-vim.keymap.set("n", "<leader>tt", "<cmd>TroubleToggle<cr>", { desc = "[T] Toggle [T] Trouble" })
 
 -- get git folder
 local function get_git_dir()
@@ -1128,6 +1121,15 @@ local files_gitdir = function()
 		})
 	end
 end
+
+vim.keymap.set("n", "<f7>", "<cmd>make build<CR>")
+vim.keymap.set("n", "<f5>", "<cmd>make run<CR>")
+vim.keymap.set("n", "<c-f6>", "<cmd>cn<CR>")
+vim.keymap.set("n", "<c-s>", "<cmd>w<CR>")
+vim.keymap.set("i", "<c-s>", "<cmd>w<CR>")
+vim.keymap.set("n", "<c-b>", builtin.buffers, { desc = "[ ] Find existing buffers" })
+vim.keymap.set("n", "<leader>n", "<cmd>NvimTreeToggle<cr>", { desc = "Toggle [N] NvimTree" })
+vim.keymap.set("n", "<leader>tt", "<cmd>TroubleToggle<cr>", { desc = "[T] Toggle [T] Trouble" })
 
 vim.keymap.set("n", "<c-p>", files_gitdir, { desc = "[S]earch [F]iles" })
 vim.keymap.set("n", "<c-h>", old_gitdir, { desc = "[S]earch [H]istory" })
