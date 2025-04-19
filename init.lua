@@ -1051,7 +1051,15 @@ require("lazy").setup({
 			})
 		end,
 	},
-	{ "EdenEast/nightfox.nvim" },
+	{
+		"okuuva/auto-save.nvim",
+		config = function()
+			require("auto-save").setup({
+				-- your config goes here
+				-- or just leave it empty :)
+			})
+		end,
+	},
 
 	--
 }, {
@@ -1131,6 +1139,7 @@ vim.keymap.set("n", "<c-b>", builtin.buffers, { desc = "[ ] Find existing buffer
 vim.keymap.set("n", "<leader>n", "<cmd>NvimTreeToggle<cr>", { desc = "Toggle [N] NvimTree" })
 vim.keymap.set("n", "<leader>tt", "<cmd>TroubleToggle<cr>", { desc = "[T] Toggle [T] Trouble" })
 
+vim.keymap.set("n", " ", vim.lsp.buf.code_action)
 vim.keymap.set("n", "<c-p>", files_gitdir, { desc = "[S]earch [F]iles" })
 vim.keymap.set("n", "<c-h>", old_gitdir, { desc = "[S]earch [H]istory" })
 vim.keymap.set("n", "<leader>sg", files_gitdir, { desc = "[S] Search [G] Git project" })
