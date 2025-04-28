@@ -310,7 +310,6 @@ require("lazy").setup({
 	{ -- Fuzzy Finder (files, lsp, etc)
 		"nvim-telescope/telescope.nvim",
 		event = "VimEnter",
-		branch = "0.1.x",
 		dependencies = {
 			"nvim-lua/plenary.nvim",
 			{ -- If encountering errors, see telescope-fzf-native README for installation instructions
@@ -511,7 +510,7 @@ require("lazy").setup({
 					--  This is where a variable was first declared, or where a function is defined, etc.
 					--  To jump back, press <C-t>.
 					map("gd", require("telescope.builtin").lsp_definitions, "[G]oto [D]efinition")
-					map("<f12>", require("telescope.builtin").lsp_definitions, "[G]oto [D]efinition")
+					map("<f12>", vim.lsp.buf.definition, "[G]oto [D]efinition")
 
 					-- Find references for the word under your cursor.
 					map("gr", require("telescope.builtin").lsp_references, "[G]oto [R]eferences")
@@ -1051,17 +1050,17 @@ require("lazy").setup({
 			})
 		end,
 	},
+	{ "vuciv/vim-bujo" },
 	{
 		"okuuva/auto-save.nvim",
 		config = function()
 			require("auto-save").setup({
+				noautocmd = true,
 				-- your config goes here
 				-- or just leave it empty :)
 			})
 		end,
 	},
-
-	--
 }, {
 	ui = {
 		-- If you are using a Nerd Font: set icons to an empty table which will use the
@@ -1130,6 +1129,8 @@ local files_gitdir = function()
 	end
 end
 
+vim.opt.swapfile = false
+
 vim.keymap.set("n", "<f7>", "<cmd>make build<CR>")
 vim.keymap.set("n", "<f5>", "<cmd>make run<CR>")
 vim.keymap.set("n", "<c-f6>", "<cmd>cn<CR>")
@@ -1146,6 +1147,7 @@ vim.keymap.set("n", "<leader>sg", files_gitdir, { desc = "[S] Search [G] Git pro
 vim.keymap.set("n", "<leader>sG", live_grep_gitdir, { desc = "[S] Search [G] Git Grep" })
 
 vim.keymap.set("n", "<f2>", vim.lsp.buf.rename, { desc = "[S] Search [G] Git Grep" })
+vim.keymap.set("n", "<f3>", "<cmd>ClangdSwitchSourceHeader<CR>", { desc = "[F3] Switch C/C++ Source/Header" })
 vim.keymap.set("n", "<leader>cr", vim.lsp.buf.rename, { desc = "[C] Code [R] Rename" })
 vim.keymap.set("n", "<leader>ch", function()
 	vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())

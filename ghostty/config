@@ -1,0 +1,8 @@
+
+font-feature = -calt
+font-size = 15
+theme = dark:tokyonight,light:tokyonight-day
+macos-non-native-fullscreen = true
+# custom-shader=~/.shaders/starfield.glsl
+split-divider-color = #ffffff
+font-style = Bold
