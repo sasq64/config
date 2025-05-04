@@ -1061,6 +1061,26 @@ require("lazy").setup({
 			})
 		end,
 	},
+	{
+		"nvim-treesitter/nvim-treesitter-context",
+		config = function()
+			require("treesitter-context").setup({
+				enable = true, -- Enable this plugin (Can be enabled/disabled later via commands)
+				multiwindow = false, -- Enable multiwindow support.
+				max_lines = 5, -- How many lines the window should span. Values <= 0 mean no limit.
+				min_window_height = 0, -- Minimum editor window height to enable context. Values <= 0 mean no limit.
+				line_numbers = true,
+				multiline_threshold = 20, -- Maximum number of lines to show for a single context
+				trim_scope = "outer", -- Which context lines to discard if `max_lines` is exceeded. Choices: 'inner', 'outer'
+				mode = "cursor", -- Line used to calculate context. Choices: 'cursor', 'topline'
+				-- Separator between context and content. Should be a single character string, like '-'.
+				-- When separator is set, the context will only show up when there are at least 2 lines above cursorline.
+				separator = nil,
+				zindex = 20, -- The Z-index of the context window
+				on_attach = nil, -- (fun(buf: integer): boolean) return false to disable attaching
+			})
+		end,
+	},
 }, {
 	ui = {
 		-- If you are using a Nerd Font: set icons to an empty table which will use the
@@ -1137,8 +1157,7 @@ vim.keymap.set("n", "<c-f6>", "<cmd>cn<CR>")
 vim.keymap.set("n", "<c-s>", "<cmd>w<CR>")
 vim.keymap.set("i", "<c-s>", "<cmd>w<CR>")
 vim.keymap.set("n", "<c-b>", builtin.buffers, { desc = "[ ] Find existing buffers" })
-vim.keymap.set("n", "<leader>n", "<cmd>NvimTreeToggle<cr>", { desc = "Toggle [N] NvimTree" })
-vim.keymap.set("n", "<leader>tt", "<cmd>TroubleToggle<cr>", { desc = "[T] Toggle [T] Trouble" })
+vim.keymap.set("n", "<leader>tn", "<cmd>NvimTreeToggle<cr>", { desc = "[T] Toggle [N] NvimTree" })
 
 vim.keymap.set("n", " ", vim.lsp.buf.code_action)
 vim.keymap.set("n", "<c-p>", files_gitdir, { desc = "[S]earch [F]iles" })
@@ -1148,6 +1167,8 @@ vim.keymap.set("n", "<leader>sG", live_grep_gitdir, { desc = "[S] Search [G] Git
 
 vim.keymap.set("n", "<f2>", vim.lsp.buf.rename, { desc = "[S] Search [G] Git Grep" })
 vim.keymap.set("n", "<f3>", "<cmd>ClangdSwitchSourceHeader<CR>", { desc = "[F3] Switch C/C++ Source/Header" })
+
+vim.keymap.set("n", "<leader>tc", "<cmd>TSContextToggle<CR>", { desc = "[T] Toggle [C] context" })
 vim.keymap.set("n", "<leader>cr", vim.lsp.buf.rename, { desc = "[C] Code [R] Rename" })
 vim.keymap.set("n", "<leader>ch", function()
 	vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
