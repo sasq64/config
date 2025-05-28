@@ -652,6 +652,11 @@ require("lazy").setup({
 			-- for you, so that they are available from within Neovim.
 			local ensure_installed = vim.tbl_keys(servers or {})
 			vim.list_extend(ensure_installed, {
+				"basedpyright",
+				"clangd",
+				"codelldb",
+				"black",
+				"mypy",
 				"stylua", -- Used to format Lua code
 			})
 			require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
@@ -962,7 +967,16 @@ require("lazy").setup({
 	},
 	{
 		"mfussenegger/nvim-dap",
+		dependencies = {
+			"rcarriga/nvim-dap-ui", -- UI for DAP (optional but recommended)
+			"jay-babu/mason-nvim-dap.nvim", -- Auto-installs DAP debuggers via Mason
+		},
 		config = function()
+			require("dapui").setup()
+			require("mason-nvim-dap").setup({
+				ensure_installed = { "debugpy" },
+				handlers = {}, -- auto-setup
+			})
 			local dap = require("dap")
 			dap.adapters.codelldb = {
 				type = "server",
@@ -982,6 +996,12 @@ require("lazy").setup({
 			-- 	},
 			-- }
 		end,
+	},
+	{
+		"jay-babu/mason-nvim-dap.nvim",
+		opts = {
+			ensure_installed = { "debugpy" },
+		},
 	},
 	{
 		"mrcjkb/rustaceanvim",
@@ -1179,5 +1199,26 @@ end, { desc = "[C] Code [H] Toggle hints" })
 vim.api.nvim_create_autocmd("TermOpen", {
 	command = "startinsert",
 })
+
+local dap = require("dap")
+
+dap.adapters.python = {
+	type = "executable",
+	command = "python3",
+	args = { "-m", "debugpy.adapter" },
+}
+
+dap.configurations.python = {
+	{
+		type = "python",
+		request = "launch",
+		name = "Launch file",
+		program = "${file}",
+		pythonPath = function()
+			return vim.fn.exepath("python3")
+		end,
+	},
+}
+
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
