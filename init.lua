@@ -371,6 +371,9 @@ require("lazy").setup({
 					layout_strategy = "vertical",
 				},
 				pickers = {
+					colorscheme = {
+						enable_preview = true,
+					},
 					buffers = {
 						ignore_current_buffer = true,
 						sort_lastused = true,
@@ -705,7 +708,7 @@ require("lazy").setup({
 			formatters_by_ft = {
 				lua = { "stylua" },
 				-- Conform can also run multiple formatters sequentially
-				-- python = { "isort", "black" },
+				python = { "isort", "black" },
 				--
 				-- You can use a sub-list to tell conform to run *until* a formatter
 				-- is found.
@@ -1082,6 +1085,46 @@ require("lazy").setup({
 		end,
 	},
 	{
+		"bngarren/checkmate.nvim",
+		ft = "markdown", -- Lazy loads for Markdown files matching patterns in 'files'
+		opts = {
+			-- your configuration here
+			-- or leave empty to use defaults
+		},
+		{
+			"jackMort/ChatGPT.nvim",
+			event = "VeryLazy",
+			config = function()
+				local home = vim.fn.expand("$HOME")
+				local config = {
+					openai_params = {
+						model = "gpt-4.1",
+						max_tokens = 4096,
+					},
+					popup_layout = {
+						default = "center",
+						center = {
+							width = "100%",
+							height = "100%",
+						},
+						right = {
+							width = "50%",
+							width_settings_open = "50%",
+						},
+					},
+					api_key_cmd = "cat " .. home .. "/.nvim.openai.key",
+				}
+				require("chatgpt").setup(config)
+			end,
+			dependencies = {
+				"MunifTanjim/nui.nvim",
+				"nvim-lua/plenary.nvim",
+				"folke/trouble.nvim", -- optional
+				"nvim-telescope/telescope.nvim",
+			},
+		},
+	}, -- Lazy
+	{
 		"nvim-treesitter/nvim-treesitter-context",
 		config = function()
 			require("treesitter-context").setup({
@@ -1164,6 +1207,7 @@ local files_gitdir = function()
 		builtin.find_files()
 	else
 		builtin.find_files({
+			hidden = true,
 			cwd = git_dir,
 		})
 	end
@@ -1171,6 +1215,7 @@ end
 
 vim.opt.swapfile = false
 
+vim.keymap.set("n", "<f4>", "<cmd>ChatGPT<CR>")
 vim.keymap.set("n", "<f7>", "<cmd>make build<CR>")
 vim.keymap.set("n", "<f5>", "<cmd>make run<CR>")
 vim.keymap.set("n", "<c-f6>", "<cmd>cn<CR>")

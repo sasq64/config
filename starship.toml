@@ -1,5 +1,6 @@
 format = """
 $directory\
+$python\
 $git_branch\
 $character"""
 
@@ -18,6 +19,20 @@ truncation_symbol = "…/"
 [character]
 success_symbol = '[ →](bold green)'
 error_symbol = '[ ✗](bold red)'
+
+[python]
+disabled = true
+format = '[${symbol}${pyenv_prefix}(${version} )(\($virtualenv\) )]($style)'
+
+#[custom.venv_parent]
+#command = '''
+#if [ -n "$VIRTUAL_ENV" ]; then
+#  echo "basename "$(dirname "$VIRTUAL_ENV")"
+#fi
+#'''
+#when = true 
+#'test -n "$VIRTUAL_ENV"'
+#format = 'via [($output)](yellow) '
 
 [git_branch]
 symbol = ""
