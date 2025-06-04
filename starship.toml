@@ -1,8 +1,12 @@
 format = """
+$hostname\
 $directory\
 $python\
 $git_branch\
 $character"""
+
+[hostname]
+format = '[$ssh_symbol$hostname]($style)'
 
 [directory]
 style = "fg:#f3a040"
