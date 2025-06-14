@@ -1238,7 +1238,7 @@ vim.keymap.set("n", "<leader>sg", files_gitdir, { desc = "[S] Search [G] Git pro
 vim.keymap.set("n", "<leader>sG", live_grep_gitdir, { desc = "[S] Search [G] Git Grep" })
 
 vim.keymap.set("n", "<f2>", vim.lsp.buf.rename, { desc = "[S] Search [G] Git Grep" })
-vim.keymap.set("n", "<f3>", "<cmd>ClangdSwitchSourceHeader<CR>", { desc = "[F3] Switch C/C++ Source/Header" })
+vim.keymap.set("n", "<f3>", "<cmd>LspClangdSwitchSourceHeader<CR>", { desc = "[F3] Switch C/C++ Source/Header" })
 
 vim.keymap.set("n", "<leader>tc", "<cmd>TSContextToggle<CR>", { desc = "[T] Toggle [C] context" })
 vim.keymap.set("n", "<leader>cr", vim.lsp.buf.rename, { desc = "[C] Code [R] Rename" })
