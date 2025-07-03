@@ -1087,40 +1087,41 @@ require("lazy").setup({
 		opts = {
 			-- your configuration here
 			-- or leave empty to use defaults
+      -- ☐ ☑
 		},
-		{
-			"jackMort/ChatGPT.nvim",
-			event = "VeryLazy",
-			config = function()
-				local home = vim.fn.expand("$HOME")
-				local config = {
-					openai_params = {
-						model = "gpt-4.1",
-						max_tokens = 4096,
+	},
+	{
+		"jackMort/ChatGPT.nvim",
+		event = "VeryLazy",
+		config = function()
+			local home = vim.fn.expand("$HOME")
+			local config = {
+				openai_params = {
+					model = "gpt-4.1",
+					max_tokens = 4096,
+				},
+				popup_layout = {
+					default = "center",
+					center = {
+						width = "100%",
+						height = "100%",
 					},
-					popup_layout = {
-						default = "center",
-						center = {
-							width = "100%",
-							height = "100%",
-						},
-						right = {
-							width = "50%",
-							width_settings_open = "50%",
-						},
+					right = {
+						width = "50%",
+						width_settings_open = "50%",
 					},
-					api_key_cmd = "cat " .. home .. "/.nvim.openai.key",
-				}
-				require("chatgpt").setup(config)
-			end,
-			dependencies = {
-				"MunifTanjim/nui.nvim",
-				"nvim-lua/plenary.nvim",
-				"folke/trouble.nvim", -- optional
-				"nvim-telescope/telescope.nvim",
-			},
+				},
+				api_key_cmd = "cat " .. home .. "/.nvim.openai.key",
+			}
+			require("chatgpt").setup(config)
+		end,
+		dependencies = {
+			"MunifTanjim/nui.nvim",
+			"nvim-lua/plenary.nvim",
+			"folke/trouble.nvim", -- optional
+			"nvim-telescope/telescope.nvim",
 		},
-	}, -- Lazy
+	},
 	{
 		"nvim-treesitter/nvim-treesitter-context",
 		config = function()
