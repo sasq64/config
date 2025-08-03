@@ -795,7 +795,7 @@ require("lazy").setup({
 					-- Manually trigger a completion from nvim-cmp.
 					--  Generally you don't need this, because nvim-cmp will display
 					--  completions whenever it has completion options available.
-					["<C-Space>"] = cmp.mapping.complete({}),
+					-- ["<C-Space>"] = cmp.mapping.complete({}),
 
 					-- Think of <c-l> as moving to the right of your snippet expansion.
 					--  So if you have a snippet that's like:
@@ -1087,7 +1087,6 @@ require("lazy").setup({
 		opts = {
 			-- your configuration here
 			-- or leave empty to use defaults
-      -- ☐ ☑
 		},
 	},
 	{
@@ -1223,6 +1222,7 @@ vim.cmd.hi("Comment guifg=#e03080")
 vim.opt.swapfile = false
 vim.opt.lbr = true
 
+vim.keymap.set("i", "<c-Space>", "<Esc>")
 vim.keymap.set("n", "<f4>", "<cmd>ChatGPT<CR>")
 vim.keymap.set("n", "<f7>", "<cmd>make build<CR>")
 vim.keymap.set("n", "<f5>", "<cmd>make run<CR>")
