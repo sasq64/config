@@ -6,3 +6,6 @@ macos-non-native-fullscreen = true
 # custom-shader=~/.shaders/starfield.glsl
 split-divider-color = #ff8080
 font-style = Bold
+
+keybind = ctrl+tab=goto_split:next
+
