@@ -256,6 +256,7 @@ require("lazy").setup({
 	{ -- Adds git related signs to the gutter, as well as utilities for managing changes
 		"lewis6991/gitsigns.nvim",
 		opts = {
+			current_line_blame = true,
 			signs = {
 				add = { text = "+" },
 				change = { text = "~" },
@@ -1090,38 +1091,6 @@ require("lazy").setup({
 		},
 	},
 	{
-		"jackMort/ChatGPT.nvim",
-		event = "VeryLazy",
-		config = function()
-			local home = vim.fn.expand("$HOME")
-			local config = {
-				openai_params = {
-					model = "gpt-4.1",
-					max_tokens = 4096,
-				},
-				popup_layout = {
-					default = "center",
-					center = {
-						width = "100%",
-						height = "100%",
-					},
-					right = {
-						width = "50%",
-						width_settings_open = "50%",
-					},
-				},
-				api_key_cmd = "cat " .. home .. "/.nvim.openai.key",
-			}
-			require("chatgpt").setup(config)
-		end,
-		dependencies = {
-			"MunifTanjim/nui.nvim",
-			"nvim-lua/plenary.nvim",
-			"folke/trouble.nvim", -- optional
-			"nvim-telescope/telescope.nvim",
-		},
-	},
-	{
 		"nvim-treesitter/nvim-treesitter-context",
 		config = function()
 			require("treesitter-context").setup({
@@ -1140,6 +1109,32 @@ require("lazy").setup({
 				on_attach = nil, -- (fun(buf: integer): boolean) return false to disable attaching
 			})
 		end,
+	},
+	{
+		"coder/claudecode.nvim",
+		dependencies = { "folke/snacks.nvim" },
+		config = function()
+			require("claudecode").setup()
+		end,
+		keys = {
+			{ "<leader>a", nil, desc = "AI/Claude Code" },
+			{ "<leader>ac", "<cmd>ClaudeCode<cr>", desc = "Toggle Claude" },
+			{ "<leader>af", "<cmd>ClaudeCodeFocus<cr>", desc = "Focus Claude" },
+			{ "<leader>ar", "<cmd>ClaudeCode --resume<cr>", desc = "Resume Claude" },
+			{ "<leader>aC", "<cmd>ClaudeCode --continue<cr>", desc = "Continue Claude" },
+			{ "<leader>am", "<cmd>ClaudeCodeSelectModel<cr>", desc = "Select Claude model" },
+			{ "<leader>ab", "<cmd>ClaudeCodeAdd %<cr>", desc = "Add current buffer" },
+			{ "<leader>as", "<cmd>ClaudeCodeSend<cr>", mode = "v", desc = "Send to Claude" },
+			{
+				"<leader>as",
+				"<cmd>ClaudeCodeTreeAdd<cr>",
+				desc = "Add file",
+				ft = { "NvimTree", "neo-tree", "oil", "minifiles" },
+			},
+			-- Diff management
+			{ "<leader>aa", "<cmd>ClaudeCodeDiffAccept<cr>", desc = "Accept diff" },
+			{ "<leader>ad", "<cmd>ClaudeCodeDiffDeny<cr>", desc = "Deny diff" },
+		},
 	},
 }, {
 	ui = {

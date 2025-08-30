@@ -8,4 +8,6 @@ split-divider-color = #ff8080
 font-style = Bold
 
 keybind = ctrl+tab=goto_split:next
+keybind = option+left=unbind
+keybind = option+right=unbind
 
