@@ -221,6 +221,13 @@ if not vim.loop.fs_stat(lazypath) then
 end ---@diagnostic disable-next-line: undefined-field
 vim.opt.rtp:prepend(lazypath)
 
+-- [[ Load custom theme configuration ]]
+local theme_config = nil
+local theme_config_path = vim.fn.expand("~/.config/omarchy/current/theme/neovim.lua")
+if vim.loop.fs_stat(theme_config_path) then
+	theme_config = dofile(theme_config_path)
+end
+
 -- [[ Configure and install plugins ]]
 --
 --  To check the current status of your plugins, run
@@ -232,7 +239,7 @@ vim.opt.rtp:prepend(lazypath)
 --    :Lazy update
 --
 -- NOTE: Here is where you install your plugins.
-require("lazy").setup({
+local plugins = {
 	-- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
 	"tpope/vim-sleuth", -- Detect tabstop and shiftwidth automatically
 
@@ -828,12 +835,12 @@ require("lazy").setup({
 			})
 		end,
 	},
-	{
-		"f-person/auto-dark-mode.nvim",
-		opts = {
-			update_interval = 1000,
-		},
-	},
+	-- {
+	-- 	"f-person/auto-dark-mode.nvim",
+	-- 	opts = {
+	-- 		update_interval = 1000,
+	-- 	},
+	-- },
 	-- { -- You can easily change to a different colorscheme.
 	-- 	-- Change the name of the colorscheme plugin below, and then
 	-- 	-- change the command in the config to whatever the name of that colorscheme is.
@@ -1136,7 +1143,14 @@ require("lazy").setup({
 			{ "<leader>ad", "<cmd>ClaudeCodeDiffDeny<cr>", desc = "Deny diff" },
 		},
 	},
-}, {
+}
+
+-- Add theme plugin if custom theme config exists
+if theme_config then
+	table.insert(plugins, theme_config[1])
+end
+
+require("lazy").setup(plugins, {
 	ui = {
 		-- If you are using a Nerd Font: set icons to an empty table which will use the
 		-- default lazy.nvim defined Nerd Font icons, otherwise define a unicode icons table
@@ -1205,7 +1219,13 @@ local files_gitdir = function()
 	end
 end
 
-vim.cmd.colorscheme("PaperColor")
+-- Apply colorscheme from theme config if available
+if theme_config and theme_config[2] and theme_config[2].opts and theme_config[2].opts.colorscheme then
+	vim.cmd.colorscheme(theme_config[2].opts.colorscheme)
+else
+	vim.cmd.colorscheme("PaperColor")
+end
+
 vim.api.nvim_create_autocmd("ColorScheme", {
 	pattern = "*",
 	callback = function()
